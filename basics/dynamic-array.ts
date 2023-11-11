@@ -1,9 +1,9 @@
 interface IDynamicArray {
-  get(index: number): number;
+  get(i: number): number;
 
-  set(index: number, value: number): void;
+  set(i: number, n: number): void;
 
-  pushback(value: number): void;
+  pushback(n: number): void;
 
   popback(): number;
 
@@ -16,6 +16,7 @@ interface IDynamicArray {
 
 class DynamicArray implements IDynamicArray {
   private array: Array<number>;
+  private size: number = 0;
 
   constructor(private capacity: number) {
     if (this.capacity <= 0) {
@@ -24,33 +25,39 @@ class DynamicArray implements IDynamicArray {
     this.array = new Array<number>(this.capacity);
   }
 
-  get(index: number): number {
-    return this.array[index];
+  get(i: number): number {
+    return this.array[i];
   }
 
-  set(index: number, value: number): void {
-    this.array[index] = value;
+  set(i: number, n: number): void {
+    this.array[i] = n;
+    this.size++;
   }
 
-  pushback(value: number): void {
+  pushback(n: number): void {
     if (this.isFull()) {
       this.resize();
     }
-    this.array.push(value);
+    this.array[this.size] = n;
+    this.size++;
   }
 
   popback(): number {
-    return this.array.pop() ?? NaN;
+    this.size--;
+    return this.array[this.size];
   }
 
   resize(): void {
     this.capacity *= 2;
+    const newArray = new Array<number>(this.capacity);
+    for (let i = 0; i < this.array.length; i++) {
+      newArray[i] = this.array[i];
+    }
+    this.array = newArray;
   }
 
   getSize(): number {
-    return this.array.reduce((acc: number, currentValue: number): number => {
-      return typeof currentValue === "number" ? ++acc : acc;
-    }, 0);
+    return this.size;
   }
 
   getCapacity(): number {
@@ -58,6 +65,6 @@ class DynamicArray implements IDynamicArray {
   }
 
   private isFull() {
-    return typeof this.array[this.capacity - 1] === "number";
+    return this.getSize() === this.capacity;
   }
 }
