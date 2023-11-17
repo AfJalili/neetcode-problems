@@ -1,11 +1,15 @@
 function twoSum(nums: number[], target: number): number[] {
-  const map = new Map<number, number>();
+  let map = new Map<number, number>();
+  let complement: number;
   for (let i = 0; i < nums.length; i++) {
-    const complement = target - nums[i];
+    complement = target - nums[i];
+
     if (map.has(complement)) {
-      return [<number>map.get(complement), i];
+      return [map.get(complement) as number, i];
     }
+
     map.set(nums[i], i);
   }
+
   throw new Error("No two sum solution");
 }
